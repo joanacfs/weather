@@ -13,11 +13,9 @@ function isToday() {
 function citySearch(event) {
     event.preventDefault();
     let input = document.querySelector("#search-input");
-    let actualCity = document.querySelector("#actual-city");
     let chosenCity = input.value;
     let key = "a34d18380688cbcca8e36a7c0180b644";
     let cityNameUrl = `https://api.openweathermap.org/data/2.5/weather?q=${chosenCity}&appid=${key}&units=metric`;
-    actualCity.innerHTML = chosenCity;
     axios.get(cityNameUrl).then(displayWeather);
 }
 
@@ -33,8 +31,8 @@ function determineLocation() {
 }
 
 function showPosition(position) {
-    let actualCity = document.querySelector("#actual-city");
-    actualCity.innerHTML = `Your coordinates are ${position.coords.latitude} and ${position.coords.longitude}`;
+    let actualCity = document.querySelector("#search-engine");
+    actualCity.innerHTML = "Atual Location";
     let latitude = `${position.coords.latitude}`;
     console.log(latitude);
     let longitude = `${position.coords.longitude}`;
@@ -47,15 +45,32 @@ function showPosition(position) {
 //  ACTUAL WEATHER
 
 function displayWeather(response) {
+    console.log(response.data);
+    let description = document.querySelector("#description");
+    let windSpeed = document.querySelector("#wind-speed");
+    let humidity = document.querySelector("#humidity");
+
     let weatherMax = document.querySelector("#temp-now-max");
     let weatherMin = document.querySelector("#temp-now-min");
-    console.log("1");
-    let temperatureMax = Math.round(response.data.main.temp_max);
-    let temperatureMin = Math.round(response.data.main.temp_min);
+    let icon = document.querySelector("#weatherNowIcon");
+
+    let wDescription = response.data.weather[0].description;
+    let wSpeed = Math.round(response.data.wind.speed);
+    let wHumidity = response.data.main.humidity;
+
+    celsiusMaxTemp = response.data.main.temp_max;
+    celsiusMinTemp = response.data.main.temp_min;
+    let temperatureMax = Math.round(celsiusMaxTemp);
+    let temperatureMin = Math.round(celsiusMinTemp);
+    let weatherIcon = response.data.weather[0].icon;
+
+    description.innerHTML = `${wDescription}`
+    windSpeed.innerHTML = `Wind Speed ${wSpeed} km/h`
+    humidity.innerHTML = ` Humidity ${wHumidity}%`
+    icon.setAttribute("src", `http://openweathermap.org/img/wn/${weatherIcon}.png`)
     weatherMax.innerHTML = `${temperatureMax}`
     weatherMin.innerHTML = `${temperatureMin}`
-    return (temperatureMax, temperatureMin);
-
+    return (wDescription, wSpeed, wHumidity, temperatureMax, temperatureMin, weatherIcon);
 }
 
 ///ºF AND ºC
@@ -63,25 +78,24 @@ function toFahrenheit(event) {
     event.preventDefault
     let tempFahrenheitMax = document.querySelector("#temp-now-max");
     let tempFahrenheitMin = document.querySelector("#temp-now-min");
-    tempFahrenheitMax.innerHTML = (22 * 9 / 5 + 32);
-    tempFahrenheitMin.innerHTML = (14 * 9 / 5 + 32);
+    tempFahrenheitMax.innerHTML = Math.round(celsiusMaxTemp * 9 / 5 + 32);
+    tempFahrenheitMin.innerHTML = (celsiusMinTemp * 9 / 5 + 32);
 }
-let buttonFahrenheit = document.querySelector("#fahrenheit-button");
-buttonFahrenheit.addEventListener("click", toFahrenheit);
+
 
 function toCelsius(event) {
     event.preventDefault();
     let tempCelsiusMax = document.querySelector("#temp-now-max");
     let tempCelsiusMin = document.querySelector("#temp-now-min");
-    tempCelsiusMax.innerHTML = 22;
-    tempCelsiusMin.innerHTML = 14;
+    tempCelsiusMax.innerHTML = Math.round(celsiusMaxTemp);
+    tempCelsiusMin.innerHTML = Math.round(celsiusMinTemp);
 }
-// var someVar; 
-// someVar = some_other_function();
-// alert(someVar);
-// someObj.addEventListener("click", function(){
-//     some_function(someVar);
-// }, false);
+
+let celsiusMaxTemp = null;
+let celiusMinTemp = null;
+
+let buttonFahrenheit = document.querySelector("#fahrenheit-button");
+buttonFahrenheit.addEventListener("click", toFahrenheit);
 
 let buttonCelsius = document.querySelector("#celsius-button");
 buttonCelsius.addEventListener("click", toCelsius)

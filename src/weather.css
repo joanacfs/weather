@@ -1,7 +1,30 @@
+           .weatherApp {
+               max-width: 600px;
+               padding: 20px;
+               margin: 30px auto;
+               border: 1px solid #4dd0e1;
+               border-radius: 5px;
+           }
+           
+           #search-engine {
+               margin: 0 auto;
+               display: block;
+               font-weight: bold;
+           }
+           
+           #search-input {
+               border-top: 0px;
+               border-left: 0;
+               border-right: 0;
+               border-bottom: 1px solid #4dd0e1;
+               border-radius: 0;
+           }
+           
            #searchButton {
                border: none;
                background: none;
-               padding-right: 5px;
+               margin-right: 2px;
+               padding: 1px
            }
            
            #AtualLocationButton {
@@ -9,10 +32,11 @@
                background: none;
            }
            
-           h1 {
-               text-align: center;
+           li {
+               list-style: none;
                font-family: 'Montserrat', sans-serif;
-               padding: 70px 15px;
+               font-weight: bold;
+               line-height: 3;
            }
            
            #temp-now-max,
