@@ -1,9 +1,10 @@
            .weatherApp {
-               max-width: 600px;
-               padding: 20px;
+               max-width: 650px;
+               padding: 40px;
                margin: 30px auto;
-               border: 1px solid #4dd0e1;
-               border-radius: 5px;
+               border-left: 2px dotted #4dd0e1;
+               border-right: 2px dotted #4dd0e1;
+               border-radius: 0;
            }
            
            #search-engine {
@@ -71,11 +72,21 @@
                padding: 15px;
            }
            
-           #weekDays {
-               font-family: 'Montserrat', sans-serif;
-               font-size: 25px;
-           }
-           
-           .T {
+           #whole-forecast {
                text-align: center;
            }
+           
+           #monday {
+               color: #4dd0e1;
+               font-family: 'Montserrat', sans-serif;
+               font-weight: bold;
+           }
+           
+           .Tempe,
+           .image {
+               margin: 16px 0;
+           }
+           /* #link-git {
+               max-width: 600px;
+               text-align: center;
+           } */
