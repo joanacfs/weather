@@ -1,13 +1,23 @@
 let today = document.querySelector("#date");
 
-function isToday() {
-    let now = new Date();
-    let dayMonth = now.getDate();
-    let days = ["Monday", "Tuesday", "Wednesday", "Thrusday", "Friday", "Saturday", "Sunday"];
-    let day = days[now.getDay()];
+function isToday(timeValue) {
+    let now = new Date(timeValue);
+    let dayMonth = now.getTime();
+    // let days = ["Monday", "Tuesday", "Wednesday", "Thrusday", "Friday"];
+    // let day = days[now.getDay()];
     let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     let month = months[now.getMonth()];
-    return (today.innerHTML = `${day}, ${dayMonth} ${month}`);
+    let year = now.getFullYear();
+    return `${dayMonth} ${month} ${year}`;
+}
+
+function formatHours(timestamp) {
+    let date = new Date(timestamp);
+    let hours = date.getHours();
+    if (hours < 10) { hours = `0${hours}` };
+    let minutes = date.getMinutes();
+    if (minutes < 10) { minutes = `0${minutes}` };
+    return `${hours}:${minutes}`
 }
 ///SEARCH A CITY
 function citySearch(event) {
@@ -17,6 +27,10 @@ function citySearch(event) {
     let key = "a34d18380688cbcca8e36a7c0180b644";
     let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${chosenCity}&appid=${key}&units=metric`;
     axios.get(apiUrl).then(displayWeather);
+
+    apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${chosenCity}&appid=${key}&units=metric`;
+    axios.get(apiUrl).then(displayCityForecast);
+    console.log(apiUrl);
 }
 
 let form = document.querySelector("#search-engine");
@@ -36,24 +50,19 @@ window.onload = function() {
 
 function showPosition(position) {
     let latitude = `${position.coords.latitude}`;
-    console.log(latitude);
     let longitude = `${position.coords.longitude}`;
-    console.log(longitude);
     let actualCity = document.querySelector("#search-input");
     actualCity.innerHTML = "Atual Location";
     let key = "a34d18380688cbcca8e36a7c0180b644";
     let url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${key}&units=metric`;
     axios.get(url).then(displayWeather);
-    console.log("url  " + url);
 
-    url = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&daily={part}&appid=${key}&units=metric`;
-    axios.get(url).then(displayForecast);
-    console.log(url);
+    url = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${key}&units=metric`;
+    axios.get(url).then(displayCityForecast);
 }
 //  ACTUAL WEATHER
 
 function displayWeather(response) {
-    console.log(response.data);
     let description = document.querySelector("#description");
     let windSpeed = document.querySelector("#wind-speed");
     let humidity = document.querySelector("#humidity");
@@ -81,19 +90,23 @@ function displayWeather(response) {
     return (wDescription, wSpeed, wHumidity, temperatureMax, temperatureMin, weatherIcon);
 }
 
-function displayForecast(response) {
-    let forecast = document.querySelector("#whole-forecast");
-    console.log(response.data.daily);
-    forecast.innerHTML =
-        `<div class = "col-2">
-        <div id="monday">
-        Monday
-        </div> 
-        <img src = "#" alt = "img1" class = " col-11 image"/>
-        <div class = "Tempe">
-        <strong> 18 </strong> 14º 
-        </div> 
-    </div>`;
+function displayCityForecast(response) {
+    let cityForecastElement = document.querySelector("#whole-forecast");
+    cityForecastElement.innerHTML = null;
+    cityForecast = null;
+    for (index = 0; index < 6; index++) {
+        let cityForecast = response.data.list[index];
+        cityForecastElement.innerHTML +=
+            `<div class = "col-2">
+    <div id="hour">
+    ${formatHours(cityForecast.dt*1000)}
+    </div> 
+    <img src = "http://openweathermap.org/img/wn/${cityForecast.weather[0].icon}@2x.png" alt = "img1" class = "image"/>
+    <div class = "Tempe">
+    <strong> ${Math.round(cityForecast.main.temp_max)}º </strong> ${Math.round(cityForecast.main.temp_min)}º
+    </div> 
+</div>`;
+    }
 }
 
 ///ºF AND ºC
